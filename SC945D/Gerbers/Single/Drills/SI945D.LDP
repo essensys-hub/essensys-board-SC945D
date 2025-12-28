@@ -1,0 +1,3 @@
+Layer Pairs Export File for PCB: D:\__Project\Altium\____Valentinea\SC945D\02Nov16\SI945D.PCBDOC
+LayersSetName=Top_Bot_Plated_Thru_Holes|DrillFile=si945d-plated.txt|DrillLayers=gtl,g2,g3,gbl
+LayersSetName=Top_Bot_NonPlated_Thru_Holes|DrillFile=si945d-nonplated.txt|DrillLayers=gtl,g2,g3,gbl

@@ -1,0 +1,17 @@
+DRC Rules Export File for PCB: D:\__Project\Altium\____Valentinea\SC945D\02Nov16\SI945D.PCBDOC
+RuleKind=Clearance|RuleName=Clearance_BT_MID|Scope=Board|Minimum=27.56
+RuleKind=Clearance|RuleName=Clearance_BT_EXT|Scope=Board|Minimum=216.54
+RuleKind=Clearance|RuleName=Clearance_Copper_Copper|Scope=Board|Minimum=20.00
+RuleKind=Clearance|RuleName=Clearance_Copper_MID|Scope=Board|Minimum=12.50
+RuleKind=Clearance|RuleName=Clearance_Copper_EXT|Scope=Board|Minimum=13.78
+RuleKind=Clearance|RuleName=Clearance_x_CopperToWire|Scope=Board|Minimum=11.81
+RuleKind=Clearance|RuleName=Clearance_x_PadToPad|Scope=Board|Minimum=5.91
+RuleKind=Clearance|RuleName=Clearance_x_PadToLine|Scope=Board|Minimum=5.91
+RuleKind=Clearance|RuleName=Clearance_x_WireToWire|Scope=Board|Minimum=5.91
+RuleKind=Clearance|RuleName=Clearance_x_ViaToPad|Scope=Board|Minimum=5.91
+RuleKind=Clearance|RuleName=Clearance_x_ViaToWire|Scope=Board|Minimum=5.91
+RuleKind=Clearance|RuleName=Clearance_x_ViaToVia|Scope=Board|Minimum=5.91
+RuleKind=Clearance|RuleName=Clearance_Design_HoleToHole|Scope=Board|Minimum=5.91
+RuleKind=Width|RuleName=Width|Scope=Board|Minimum=6.00
+RuleKind=SolderMaskExpansion|RuleName=SolderMaskExpansion|Scope=Board|Minimum=4.00
+RuleKind=ShortCircuit|RuleName=ShortCircuit|Scope=Board|Allowed=0

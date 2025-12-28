@@ -1,0 +1,60 @@
+﻿,Name,Description,Designator,Part Number,Price,Qty
+,C_0603_NPO_5%_1N-50V,"Condensateur céramique, NPO, 5%, CMS 0603","C1, C2, C46","KYOCERA AVX 06035A102JAT2A, ",0.33,3
+,C_0603_X7R_10%_10N-50V,"Condensateur céramique, X7R, 10%, CMS 0603, 10nF/50V","C3, C17","KEMET C0603C103K5RACTU, ",0.25786,2
+,C_0805_X5R_10%_10U-25V,"Condensateur céramique, X5R, 10%, CMS 0805, 10uF/25V","C4, C48","Murata GRM21BR61E106KA73L, ",1.18334,2
+,C_0603_X7R_10%_100N-50V,"Condensateur céramique, X7R, 10%, CMS 0603, 100nF/50V","C5, C8, C10, C12, C14, C15, C16, C18, C21, C22, C24, C25, C28, C30, C32, C34, C36, C38, C41, C43, C45","KEMET C0603C104K5RACTU, ",0.85306,21
+,C_0805_X5R_10%_10U-16V,"Condensateur céramique, X5R, 10%, CMS 0805, 10uF/16V","C6, C7, C9, C11, C13","KEMET C0805C106K4PACTU, ",1.128,5
+,C_0805_NPO_5%_470P-100V,"Condensateur céramique, NPO, 5%, CMS 0805","C19, C26","KYOCERA AVX 08051A471JAT2A, ",0.78771,2
+,C_1206_X5R_20%_47U-25V,"Condensateur céramique, X5R, 20%, CMS 1206, 47uF/25V",C20,TDK C3216X5R1E476M160AC,0.89,1
+,C_0805_X5R_10%_1U-25V,"Condensateur céramique, X5R, 10%, CMS 0805","C23, C44","KYOCERA AVX 08053D105KAT2A, ",1.17156,2
+,C_0603_X5R_10%_4.7U-6.3V,"Condensateur céramique, X5R, 10%, CMS 0603, 4.7uF/6.3V","C27, C29, C31, C33, C35, C37, C42","KEMET C0603C475K9PACTU, ",1.00436,7
+,C_0805_NPO_5%_22P-100V,"Condensateur céramique, NPO, 5%, CMS 0805","C39, C40","KYOCERA AVX 08051A220JAT2A, ",0.55222,2
+,C_1206_X5R_20%_100U-10V,"Condensateur céramique, X5R, 20%, CMS 1206, 100uF/10V","C47, C49, C50","TDK C3216X5R1A107M160AC, ",6.18161,3
+,BZX84C2V7,"Diode Zener, série BZX84C, 0.3W, +/-5%, 2.7V, CMS",D1,"Nexperia BZX84-C2V7,215",0.76534,1
+,BAT54,"Diode Schottky, Vrrm=30V, If=200mA, Vf=0.8V, CMS",D2,"Nexperia BAT54,215",0.783,1
+,PMEG2020AEA,"Diode Schottky, Vrrm=20V, If=2A, Vf=0.45V, CMS","D3, D4",,,2
+,PMEG4010CEJ,"Diode Schottky, Vrrm=40V, If=1A, Vf=0.49V, CMS, -65/+150°C","D5, D6, D8, D9","Nexperia PMEG4010CEJ,115, ",2.13707,4
+,SMBJ16CA,"Diode Transil/TVS bidirectionnelle (CA), 600W, 16V, CMS, serie SMBJ",D7,Bourns SMBJ16CA,0.4,1
+,BZX84C4V7,"Diode Zener, série BZX84C, 0.3W, +/-5%, 4.7V, CMS",D10,"Nexperia BZX84-C4V7,215",0.15,1
+,DOCUMENT_FAB_CARTE_SDFC,Document de Fabrication pour la Carte SC{Num SC}-{Version SC},DOC1,,,1
+,BLEV_CI_45D_5.08_02_256-402/333-000,"Bornier à levier pour CI, e5.08, 2pts, 45 degrés, 300V/15A, AWG 28-12, Gris",J2,WAGO 256-402/333-000,2.59039,1
+,SUP_MICRO_SD_CARD_BL_PUSH-PUSH_693071010811,"Embase pour Micro SD Card, 8 points, blindée, fixation Push-Push, noir, -25/+85°C, CMS",J3,Wurth Elektronik 693071010811,3.65009,1
+,SELF_10UH_1.19A_744043100,"Inductance bobinée CMS, 10uH +/- 10%, I=1.19A, Rdc=0.095R, SRF=40MHz, -40/+85°C",L1,,,1
+,IND_FERRITE_1206_74279218,"Inductance à ferrite multicouches CMS, imp=600R@100MHz, +/-25%, Rdc=100mR, I=2A",L2,,,1
+,IND_FERRITE_WE-SL2_2X10UH,"Filtre double ferrite, 2x10uH, 42Vac/80Vdc, 1.6A, serie WE-SL2, -40/+125°C, CMS",L4,,,1
+,MIRE_PICK-N-PLACE,"Mire pour machine de placement CMS ""Pick'n Place""","MIR1, MIR2, MIR3",,,3
+,QUARTZ_HC49/4HSMX_12M,"Quartz CMS série HCM49 (équiv HC49/US), -10/+60°C, +/-30ppm, 18pF",Q1,Citizen Finedevice HCM49 12.000MABJ-UT,0.54869,1
+,RES_0603_1%_100PPM_47K,"Résistance, 0.100W, 1%, 100ppm, 75V, 47K","R1, R2","Vishay CRCW060347K0FKEA, ",0.21547,2
+,RES_0603_1%_100PPM_10K,"Résistance, 0.100W, 1%, 100ppm, 75V, 10K","R3, R4, R20, R26, R27","Vishay CRCW060310K0FKEA, ",0.19428,5
+,RES_0603_1%_100PPM_71.5K,"Résistance, 0.100W, 1%, 100ppm, 75V, 71.5K",R5,Vishay CRCW060371K5FKEA,0.23549,1
+,RES_0603_1%_100PPM_120R,"Résistance, 0.100W, 1%, 100ppm, 75V, 120R","R6, R9","Vishay CRCW0603120RFKEA, ",0.24255,2
+,RES_0603_1%_100PPM_180R,"Résistance, 0.100W, 1%, 100ppm, 75V, 180R","R7, R8, R10, R121, R123, R125, R127","Vishay CRCW0603180RFKEA, ",0.23549,7
+,RES_0603_1%_100PPM_0R,"Résistance, 0.100W, 1%, 100ppm, 75V, 0R","R11, R13, R101, R102, R103, R104, R105, R106, R107, R108, R109, R111","Vishay CRCW06030000Z0EA, ",0.16249,12
+,RES_0603_1%_100PPM_12R,"Résistance, 0.100W, 1%, 100ppm, 75V, 12R",R12,Vishay CRCW060312R0FKEA,0.23314,1
+,RES_0603_1%_100PPM_82K,"Résistance, 0.100W, 1%, 100ppm, 75V, 82K","R14, R21",,,2
+,RES_0603_1%_100PPM_2.2K,"Résistance, 0.100W, 1%, 100ppm, 75V, 2.2K","R15, R19, R22","Vishay CRCW06032K20FKEA, ",0.2037,3
+,RES_0603_1%_100PPM_4.7K,"Résistance, 0.100W, 1%, 100ppm, 75V, 4.7K","R16, R17, R18, R30, R32, R33, R35","Vishay CRCW06034K70FKEA, ",0.21547,7
+,RES_0603_1%_100PPM_470R,"Résistance, 0.100W, 1%, 100ppm, 75V, 470R","R23, R24, R28","Vishay CRCW0603470RFKEA, ",0.21547,3
+,RES_0603_1%_100PPM_215R,"Résistance, 0.100W, 1%, 100ppm, 75V, 215R",R25,,,1
+,RES_0603_1%_100PPM_22K,"Résistance, 0.100W, 1%, 100ppm, 75V, 22K",R29,Vishay CRCW060322K0FKEA,0.2143,1
+,RES_0603_1%_100PPM_18K,"Résistance, 0.100W, 1%, 100ppm, 75V, 18K",R31,Vishay CRCW060318K0FKEA,0.23549,1
+,RES_0603_1%_100PPM_100K,"Résistance, 0.100W, 1%, 100ppm, 75V, 100K",R34,Vishay CRCW0603100KFKEA,0.16367,1
+,RES_0603_1%_100PPM_130R,"Résistance, 0.100W, 1%, 100ppm, 75V, 130R","R122, R124, R126, R128","Vishay CRCW0603130RFKEA, ",0.23549,4
+,INTP_D_1C-1P_ON-MOM_434123025816,"Bouton poussoir, CI, 1 circuit, ON/MOM, droit, tactile, 50mA/12V, -40/+85°C, noir, CMS",S1,Wurth Elektronik 434123025816,7.18244,1
+,SI945B,Circuit Imprimé,SI1,,,1
+,SPEAKER_8R_0.5W_NDT-03C,"Speaker dynamique, impedance 8R, Pnom=0.5W, Pmax=0.8W, Fres=800Hz, 90dBA, -30/+85°C, CMS",SPK1,Star Micronics NDT-03C,3.8205,1
+,BC847C,"Transistor NPN, Vce=50V, Ic=0.1A, hfe=420~800, 0.25W, CMS","T1, T2, T4","Nexperia BC847C,215, ",0.93019,3
+,NX2301P_VALENTINEA,"Transistor Mosfet P, Vgs(max)=+/-8V, Vds(max)=-20V, Id=-2A, Rdson=0.100R, 0.4W, -55/+150°C, CMS",T3,"Nexperia NX2301P,215",3.20266,1
+,NTD2955G,"Transistor Mosfet P, Vdss=60V, Id=12A, Rdson=0.155R, -55/+175°C, CMS",T5,,,1
+,LMR12010YMK,"Régulateur ajustable step down, 0.8~20V, 1A, Vin=3~20V, -40/+125°C, CMS",U1,Texas Instruments LMR12010YMKE/NOPB,3.58,1
+,LD1117STR,"Régulateur de tension ajustable positif, 1.25~15V, 0.8A, LDO (1V), Vin=15Vmax, CMS","U2, U3",,,2
+,MCP120T-300I/TT,"Microcontroller Supervisory Circuit with Open Drain Output, Active Low, 2.925V trip point",U4,Microchip MCP120T-300I/TT,0.62405,1
+,LM4871M,"Amplificateur audio avec shutdown, 1.5W/8ohm, Vdd=2~5.5V, -40/+125°C, CMS",U6,Texas Instruments LM4871M/NOPB,1.71,1
+,MIC4416YM4,"Low side MOSFET Driver ,+4.5V to +18V,1.2A peak, non-inverting, -40/+85°C, CMS",U7,,,1
+,74AHC1G14GW,"Inverseur simple, Trigger de Schmitt, AHC, Picogate, CMS",U8,"Nexperia 74AHC1G14GW,125",1.14213,1
+,74LVC1G97DCKR,"Porte logique multifonction, AND/OR/NAND/NOR/INV/BUFFER, LVC, CMS SC70_6",U9,Texas Instruments SN74LVC1G97DCKR,0.22,1
+,PICASO-GFX2,"Contrôleur ASIC graphique & audio 4DGL intégré, pour écrans OLED/LCD/TFT couleurs tactiles, 16bits, CMS",U10,,,1
+,AFFICHEUR_AWY-240320T28N05,"Afficheur tactile, TFT, taille 2.8p, 240x320p, bus CPU 16 bits, dale résistive 4 fils, backlight 4 Leds, nappe à souder 37pts pas 1mm",U11,,,1
+,AFFICHEUR_4DLCD28Q,"Afficheur tactile, TFT, taille 2.8p, 240x320p, bus CPU 16 bits, dale résistive 4 fils, backlight 4 Leds, nappe à souder 37pts pas 1mm",U12,,,1
+,AFFICHEUR_VGG243264-7UFLWH,"Afficheur tactile, TFT, taille 2.8p, 240x320p, bus CPU 16 bits, dale résistive 4 fils, backlight 4 Leds, nappe à souder 37pts pas 1mm",U13,,,1
+,AFFICHEUR_KWH028Q20_F02_B,"Afficheur tactile, TFT, taille 2.8p, 240x320p, bus CPU 16 bits, dale résistive 4 fils, backlight 4 Leds, nappe à souder 37pts pas 1mm",U14,,,1

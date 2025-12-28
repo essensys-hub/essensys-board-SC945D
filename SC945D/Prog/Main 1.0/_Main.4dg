@@ -1,0 +1,659 @@
+#platform "uLCD-28PT"
+
+#STACK 1000
+#MODE RUNFLASH // Force downloader to write to flash.
+
+/*#############################################################
+######################### HISTORIQUE ##########################
+###############################################################
+V2
+-
+---------------------------------------------------------------
+V1
+C'est le point de départ et le scheduler de l'IHM.
+###############################################################
+###############################################################
+#############################################################*/
+
+/*************************************************************/
+/*                 Déclaration des Constantes                */
+/*************************************************************/
+
+// ========================= INCLUDE =========================
+
+// Ils sont dans C:\Program Files\4D Labs\4D Workshop 4 IDE\INCLUDE
+// Ils sont stockés dans des fichiers séparés pour que tous les programmes puissent les utiliser.
+// C'est le seul emplacement qui permet des accès à partir de n'importe où.
+
+#inherit "IHM_ECHANGES.INC" // Table d'échange avec le BP.
+#inherit "IHM_ECRANS.INC" // Liste des écrans.
+#inherit "IHM_DIVERS.INC" // Divers !
+#inherit "IHM_COULEURS.INC" // Codes des couleurs utilisées sur l'IHM.
+
+/*************************************************************/
+/*                 Déclaration des Variables                 */
+/*************************************************************/
+
+/*=================== VARIABLES "SYSTEME" ===================*/
+
+// Buffer utilisé pour l'envoi de trames séries bufferisées.
+// C'est juste une déclaration "matérielle" (allocation d'espace mémoire), mais il n'est jamais utilisé directement par le soft.
+var Buffer_COM_TX[128]; // 128 words, soit 256 bytes.
+
+// Buffer utilisé pour la réception de trames séries bufferisées.
+// Ce n'est pas vraiment une déclaration "matérielle" car on va vraiment lire directement dedans.
+// Cependant il est fixe et utilisé par plusieurs resources donc ça fait un peu comme si.
+// On le range la pour être à coté de son pendant TX.
+var Buffer_COM_RX[128]; // 128 words, soit 256 bytes.
+
+/*========================= SYNCHRO =========================*/
+
+// Pointeur utilisé lorsqu'on charge un programme de la uSD.
+// Pointe vers la 1ère fonction du programme chargé.
+var synchro ;
+
+/*========================= ECRANS ==========================*/
+
+// Pointeur utilisé lorsqu'on charge un programme de la uSD.
+// Pointe vers la 1ère fonction du programme chargé.
+var f_Ecran_ptr ;
+
+// Ecran actif.
+var Ecran := ECRAN_HOME;
+
+/*************************************************************/
+/* FONCTION : void main()                                    */
+/* VERSION : 1.0                                             */
+/* DESCRIPTION : "LE" main.                                  */
+/*************************************************************/
+
+func main ()
+
+    /********************************** I/O **********************************/
+
+    // Switch de détection ouverture IHM sur pin 3 en input.
+    pin_Set(INPUT,IO3_PIN);
+
+    /********************************** Son **********************************/
+
+    // Par défaut, volume du son au maximum.
+    snd_Volume(127);
+
+    /**************************** Dalle tactile ******************************/
+
+    // Dalle tactile détecte sur tout l'écran.
+    //touch_Set(2);
+    // Enable dalle tactile.
+    touch_Set(0);
+
+    /***************************** Liaison série *****************************/
+
+    // Port série COM0 en 9600 bauds.
+    // Par défaut COM0 est en 8 bits, pas de parité, 1 stop bit. Ces paramètres ne sont pas modifiables.
+    setbaud(BAUD_9600);
+
+    /********************************** uSD **********************************/
+
+    // Boucle tant que uSD en FAT16 non inséré.
+    // Lancement fonction file_Mount obligatoire pour pouvoir utiliser les autres fonction uSD ensuite.
+    while (file_Mount()==0)
+        txt_MoveCursor(1,1);
+        print("Erreur uSD");
+    wend
+    // Efface le message d'erreur puisque uSD détectée et montée succesfuly.
+    txt_MoveCursor(1,1);
+    print("          ");
+
+    /************************ Synchronisation IHM-BP *************************/
+
+    // On y passe à chaque redémarrage (à chaque fois que l'on débranche et rebranche l'IHM).
+    // Permet de brancher l'IHM dans n'importe quel sens.
+    // Permet de resynchroniser l'écran à afficher.
+
+    synchro:=file_LoadFunction("SYNCHRO.4FN");
+    // On ne sort pas de cette fonction tant que la synchronisation n'est pas terminée correctement.
+    Ecran:=synchro(Buffer_COM_TX,Buffer_COM_RX);
+    mem_Free(synchro);
+
+    /******************/
+    /* Boucle de Fond */
+    /******************/
+
+    repeat
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_HOME)
+            f_Ecran_ptr:=file_LoadFunction("Home.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_SCENARIOS_1)
+            f_Ecran_ptr:=file_LoadFunction("Scnrio1.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_SCENARIOS_2)
+            f_Ecran_ptr:=file_LoadFunction("Scnrio2.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_SORS)
+            f_Ecran_ptr:=file_LoadFunction("ScnrJS.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_SUIS_SORTI)
+            f_Ecran_ptr:=file_LoadFunction("ScnrJSS.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_VAIS_ME_COUCHER_DEBUT)
+            f_Ecran_ptr:=file_LoadFunction("SJVMCDeb.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_VAIS_ME_COUCHER_REVEIL)
+            f_Ecran_ptr:=file_LoadFunction("SJVMCR.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_VAIS_ME_COUCHER_REVEIL_GRANDE_CHAMBRE)
+            f_Ecran_ptr:=file_LoadFunction("SJVMCRGC.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_VAIS_ME_COUCHER_REVEIL_PETITE_CHAMBRE_1)
+            f_Ecran_ptr:=file_LoadFunction("SJVMCRC1.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_VAIS_ME_COUCHER_REVEIL_PETITE_CHAMBRE_2)
+            f_Ecran_ptr:=file_LoadFunction("SJVMCRC2.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_VAIS_ME_COUCHER_REVEIL_PETITE_CHAMBRE_3)
+            f_Ecran_ptr:=file_LoadFunction("SJVMCRC3.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_VAIS_ME_COUCHER_REVEIL_BUREAU)
+            f_Ecran_ptr:=file_LoadFunction("SJVMCRB.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_VAIS_ME_COUCHER_FIN)
+            f_Ecran_ptr:=file_LoadFunction("SJVMCFin.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_DORS)
+            f_Ecran_ptr:=file_LoadFunction("ScnrJD.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_JE_PARS_EN_VOYAGE)
+            f_Ecran_ptr:=file_LoadFunction("ScnrJPEV.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_PERSONNALISE)
+            f_Ecran_ptr:=file_LoadFunction("ScnrP.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_CHAUFFAGE)
+            f_Ecran_ptr:=file_LoadFunction("Chfage.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CHAUFFAGE_ZJ)
+            f_Ecran_ptr:=file_LoadFunction("ChfgZJ.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CHAUFFAGE_ZJ_FORCE)
+            f_Ecran_ptr:=file_LoadFunction("ChfZJF.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CHAUFFAGE_ZN)
+            f_Ecran_ptr:=file_LoadFunction("ChfgZN.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CHAUFFAGE_ZN_FORCE)
+            f_Ecran_ptr:=file_LoadFunction("ChfZNF.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CHAUFFAGE_SDB1)
+            f_Ecran_ptr:=file_LoadFunction("ChfgSDB1.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CHAUFFAGE_SDB1_FORCE)
+            f_Ecran_ptr:=file_LoadFunction("ChfSDB1F.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CHAUFFAGE_SDB2)
+            f_Ecran_ptr:=file_LoadFunction("ChfgSDB2.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CHAUFFAGE_SDB2_FORCE)
+            f_Ecran_ptr:=file_LoadFunction("ChfSDB2F.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_ALARME_LANCEMENT)
+            f_Ecran_ptr:=file_LoadFunction("AlrmLcmt.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_ALARME)
+            f_Ecran_ptr:=file_LoadFunction("Alrm.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_CONSO_1)
+            f_Ecran_ptr:=file_LoadFunction("Conso1.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CONSO_2)
+            f_Ecran_ptr:=file_LoadFunction("Conso2.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_REGLAGES_1)
+            f_Ecran_ptr:=file_LoadFunction("Setup1.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_SCENARIOS_1)
+            f_Ecran_ptr:=file_LoadFunction("StpScn1.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_JE_SORS)
+            f_Ecran_ptr:=file_LoadFunction("StpSJS.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_JE_VAIS_ME_COUCHER)
+            f_Ecran_ptr:=file_LoadFunction("StpSJVMC.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_JE_PARS_EN_VOYAGE)
+            f_Ecran_ptr:=file_LoadFunction("StpSJPEV.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_JE_PARS_EN_VOYAGE_OPTIONS)
+            f_Ecran_ptr:=file_LoadFunction("StSJPEVO.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_JE_PARS_EN_VOYAGE_HEURE)
+            f_Ecran_ptr:=file_LoadFunction("StSJPEVH.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_JE_PARS_EN_VOYAGE_DATE)
+            f_Ecran_ptr:=file_LoadFunction("StSJPEVD.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_PERSONNALISE)
+            f_Ecran_ptr:=file_LoadFunction("StpSP.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_SCENARIOS_2)
+            f_Ecran_ptr:=file_LoadFunction("StpScn2.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_JE_RENTRE)
+            f_Ecran_ptr:=file_LoadFunction("StpSJR.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_JE_ME_LEVE)
+            f_Ecran_ptr:=file_LoadFunction("StpSJML.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_CHAUFFAGE)
+            f_Ecran_ptr:=file_LoadFunction("StpChfg.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_CHAUFFAGE_ZJ)
+            f_Ecran_ptr:=file_LoadFunction("StpCZJ.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_CHAUFFAGE_ZN)
+            f_Ecran_ptr:=file_LoadFunction("StpCZN.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_CHAUFFAGE_SDB1)
+            f_Ecran_ptr:=file_LoadFunction("StpCSDB1.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_CHAUFFAGE_SDB2)
+            f_Ecran_ptr:=file_LoadFunction("StpCSDB2.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ALARME)
+            f_Ecran_ptr:=file_LoadFunction("StpAlrm.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ALARME_OPTIONS)
+            f_Ecran_ptr:=file_LoadFunction("StpAlmOp.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ALARME_CODE)
+            f_Ecran_ptr:=file_LoadFunction("StpAlmCd.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ALARME_TEST_DETECTIONS)
+            f_Ecran_ptr:=file_LoadFunction("StpAlmTD.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ALARME_TEST_SIRENES)
+            f_Ecran_ptr:=file_LoadFunction("StpAlmTS.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_REVEIL)
+            f_Ecran_ptr:=file_LoadFunction("StpRev.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_REVEIL_GRANDE_CHAMBRE)
+            f_Ecran_ptr:=file_LoadFunction("StpReGC.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_REVEIL_PETITE_CHAMBRE_1)
+            f_Ecran_ptr:=file_LoadFunction("StpRePC1.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_REVEIL_PETITE_CHAMBRE_2)
+            f_Ecran_ptr:=file_LoadFunction("StpRePC2.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_REVEIL_PETITE_CHAMBRE_3)
+            f_Ecran_ptr:=file_LoadFunction("StpRePC3.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_REVEIL_BUREAU)
+            f_Ecran_ptr:=file_LoadFunction("StpReB.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_REGLAGES_2)
+            f_Ecran_ptr:=file_LoadFunction("Setup2.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ARROSAGE)
+            f_Ecran_ptr:=file_LoadFunction("StpArsg.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ARROSAGE_OPTIONS)
+            f_Ecran_ptr:=file_LoadFunction("StpArsgO.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ARROSAGE_PLANNING)
+            f_Ecran_ptr:=file_LoadFunction("StpArsgP.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_MACHINES_A_LAVER)
+            f_Ecran_ptr:=file_LoadFunction("StpMAL.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_PRISES_DE_SECURITE)
+            f_Ecran_ptr:=file_LoadFunction("StpPSecu.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ECLAIRAGE)
+            f_Ecran_ptr:=file_LoadFunction("StpEclrg.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ECLAIRAGES_VARIATEURS)
+            f_Ecran_ptr:=file_LoadFunction("StpEclV.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ECLAIRAGES_TEMPORISES)
+            f_Ecran_ptr:=file_LoadFunction("StpEclT.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_REGLAGES_3)
+            f_Ecran_ptr:=file_LoadFunction("Setup3.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ALERTE)
+            f_Ecran_ptr:=file_LoadFunction("StpAlrt.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ALERTE_VOLUME)
+            f_Ecran_ptr:=file_LoadFunction("StpAlrtV.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ALERTE_DUREE)
+            f_Ecran_ptr:=file_LoadFunction("StpAlrtD.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_ACCES_A_DISTANCE)
+            f_Ecran_ptr:=file_LoadFunction("StpAAD.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_DATE)
+            f_Ecran_ptr:=file_LoadFunction("StpDate.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_HEURE)
+            f_Ecran_ptr:=file_LoadFunction("StpHeure.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_REGLAGES_4)
+            f_Ecran_ptr:=file_LoadFunction("Setup4.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_DELESTEUR)
+            f_Ecran_ptr:=file_LoadFunction("StpDlstr.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_CONSO)
+            f_Ecran_ptr:=file_LoadFunction("StpConso.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_CUMULUS)
+            f_Ecran_ptr:=file_LoadFunction("StpCmls.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_STORE)
+            f_Ecran_ptr:=file_LoadFunction("StpStr.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_STORE_OPTIONS)
+            f_Ecran_ptr:=file_LoadFunction("StpStrO.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_REGLAGE_STORE_VENT)
+            f_Ecran_ptr:=file_LoadFunction("StpStrV.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_REGLAGES_5)
+            f_Ecran_ptr:=file_LoadFunction("Setup5.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_NETTOYAGE_ECRAN)
+            f_Ecran_ptr:=file_LoadFunction("StpNetEc.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_CALIBRAGE_ECRAN)
+            f_Ecran_ptr:=file_LoadFunction("StpCalEc.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+        if (Ecran==ECRAN_INFORMATIONS)
+            f_Ecran_ptr:=file_LoadFunction("StpInfo.4FN");
+            Ecran:=f_Ecran_ptr(DELAI_VEILLE,Buffer_COM_TX,Buffer_COM_RX);
+            mem_Free(f_Ecran_ptr);
+        endif
+
+// ------------------------------------------------------------------------------------
+
+        if (Ecran==ECRAN_VEILLE)
+            f_Ecran_ptr:=file_LoadFunction("Veille.4XE");
+            Ecran:=f_Ecran_ptr();
+            mem_Free(f_Ecran_ptr);
+        endif
+
+    forever
+
+endfunc
+

@@ -1,0 +1,6 @@
+site/
+__Previews/
+History/
+*.htm
+*.LOG
+.DS_Store

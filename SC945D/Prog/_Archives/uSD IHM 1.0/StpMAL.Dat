@@ -1,0 +1,9 @@
+"0_Detecter_LL_Unset_19x18x16.bmp" 0000 0000 00 00
+"1_Detecter_LV_Unset_19x18x16.bmp" 0400 0000 00 00
+"2_Alerte_Sonore_Unset_19x18x16.bmp" 0800 0000 00 00
+"3_Detecter_LL_Set_19x18x16.bmp" 0C00 0000 00 00
+"4_Detecter_LV_Set_19x18x16.bmp" 1000 0000 00 00
+"5_Alerte_Sonore_Set_19x18x16.bmp" 1400 0000 00 00
+"Icone_Cross_50x50_16.bmp" 1800 0000 00 00
+"Icone_Tick_50x50x16.bmp" 2C00 0000 00 00
+"Message_Pb_De_Communication_111x27x16.bmp" 4000 0000 00 00
