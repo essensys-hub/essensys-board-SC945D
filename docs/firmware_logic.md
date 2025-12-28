@@ -4,6 +4,26 @@
 Le firmware du SC945D est développé en **4DGL** (4D Graphics Language) pour le processeur **PICASO-GFX2** de 4D Systems. Il adopte une architecture modulaire unique pour contourner les limitations de mémoire flash interne en utilisant la carte uSD comme stockage de programme étendu.
 
 ## Architecture Modulaire
+
+```mermaid
+graph TD
+    subgraph "Flash Interne (PICASO)"
+        Main[_Main.4Xe]
+    end
+
+    subgraph "Carte uSD (FAT16)"
+        Func1[Home.4FN]
+        Func2[Setup.4FN]
+        Func3[Alarme.4FN]
+        Assets[Images / .Gci]
+    end
+
+    Main -- "file_LoadFunction()" --> RAM[RAM du Processeur]
+    Func1 -.-> RAM
+    Func2 -.-> RAM
+    RAM -- "Exécution" --> Display[Affichage]
+```
+
 Le système est divisé en deux parties :
 1.  **Le Noyau (`_Main.4dg`)** : Un programme résident en mémoire Flash qui initialise le matériel et agit comme un ordonnanceur (scheduler).
 2.  **Les Applications (`*.4FN`)** : Des modules fonctionnels indépendants stockés sur la carte uSD et chargés dynamiquement en RAM.
@@ -16,6 +36,30 @@ Le système est divisé en deux parties :
 ## Algorithme Principal (`_Main.4dg`)
 
 Le fichier `SC945D/Prog/Main 1.0/_Main.4dg` est le point d'entrée. Son cycle de vie est le suivant :
+
+```mermaid
+flowchart TD
+    Start((Démarrage)) --> Init[Initialisation Hardware]
+    Init --> CheckSD{uSD Présente ?}
+    CheckSD -- Non --> Wait[Attente uSD]
+    Wait --> CheckSD
+    CheckSD -- Oui --> Loop(Boucle Principale)
+    
+    Loop --> CheckState{État 'Ecran' ?}
+    
+    CheckState -- ECRAN_HOME --> LoadHome[Charger 'Home.4FN']
+    CheckState -- ECRAN_SETUP --> LoadSetup[Charger 'Setup.4FN']
+    CheckState -- ... --> LoadOther[...]
+    
+    LoadHome --> Exec[Exécuter Fonction]
+    LoadSetup --> Exec
+    LoadOther --> Exec
+    
+    Exec --> NewState[Retour Nouvel État]
+    NewState --> Free[Libérer Mémoire]
+    Free --> UpdateState[Mise à jour 'Ecran']
+    UpdateState --> Loop
+```
 
 ### 1. Initialisation
 Au démarrage, le `main()` effectue les configurations matérielles :
