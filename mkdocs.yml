@@ -1,0 +1,40 @@
+site_name: SC945D - Documentation
+site_url: https://essensys-project.github.io/SC945D/
+repo_url: https://github.com/Start-sys/essensys-board-SC945D
+repo_name: Start-sys/essensys-board-SC945D
+
+theme:
+  name: material
+  language: fr
+  palette:
+    - scheme: default
+      primary: teal
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.expand
+    - navigation.sections
+    - content.code.copy
+
+nav:
+  - Accueil: index.md
+  - Architecture: architecture.md
+  - Hardware: hardware.md
+  - Firmware: firmware.md
+  - Téléchargements: downloads.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+
+copyright: Copyright &copy; 2025 Essensys Project
