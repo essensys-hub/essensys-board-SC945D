@@ -29,6 +29,7 @@ nav:
   - Architecture: architecture.md
   - Hardware: hardware.md
   - Firmware: firmware.md
+  - Analyse Logicielle: firmware_logic.md
   - Téléchargements: downloads.md
 
 markdown_extensions:
