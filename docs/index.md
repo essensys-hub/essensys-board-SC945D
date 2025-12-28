@@ -4,16 +4,31 @@ Bienvenue dans la documentation technique du module **SC945D**. Ce projet s'insc
 
 Le SC945D est une interface utilisateur tactile compacte destinée au pilotage de la domotique.
 
-## Aperçu du Schéma
+## Aperçu - Schéma Électronique
 
-Voici un aperçu de l'électronique du module (MCU et Connecteurs) :
-
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
-  <img src="assets/images/schematic_p2.png" alt="Schematic MCU" style="border: 1px solid #ddd; max-width: 45%;">
-  <img src="assets/images/schematic_p8.png" alt="Schematic Connectors" style="border: 1px solid #ddd; max-width: 45%;">
+<div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+  <img src="assets/images/schematic-1.png" height="300" alt="Page 1">
+  <img src="assets/images/schematic-2.png" height="300" alt="Page 2">
+  <img src="assets/images/schematic-3.png" height="300" alt="Page 3">
+  <img src="assets/images/schematic-4.png" height="300" alt="Page 4">
+  <img src="assets/images/schematic-5.png" height="300" alt="Page 5">
+  <img src="assets/images/schematic-6.png" height="300" alt="Page 6">
+  <img src="assets/images/schematic-7.png" height="300" alt="Page 7">
+  <img src="assets/images/schematic-8.png" height="300" alt="Page 8">
+  <img src="assets/images/schematic-9.png" height="300" alt="Page 9">
 </div>
 
 [Voir le schéma complet (PDF)](assets/SC945D_Schematic.pdf){ .md-button .md-button--primary }
+
+## Aperçu - Assemblage
+
+<div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+  <img src="assets/images/assembly-1.png" height="300" alt="Assy 1">
+  <img src="assets/images/assembly-2.png" height="300" alt="Assy 2">
+  <img src="assets/images/assembly-3.png" height="300" alt="Assy 3">
+  <img src="assets/images/assembly-4.png" height="300" alt="Assy 4">
+  <img src="assets/images/assembly-5.png" height="300" alt="Assy 5">
+</div>
 
 ## Documentation
 
