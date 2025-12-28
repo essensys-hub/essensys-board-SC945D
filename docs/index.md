@@ -38,3 +38,4 @@ Explorez les détails techniques du module :
 *   [🔌 Hardware](hardware.md) - Détails des composants et PCB.
 *   [💾 Téléchargements](downloads.md) - Fichiers sources et fabrication.
 *   [💻 Firmware](firmware.md) - Logiciel embarqué et PICASO-GFX2.
+*   [🧠 Analyse Logicielle](firmware_logic.md) - Algorithmes et architecture modulaire (Mermaid).
