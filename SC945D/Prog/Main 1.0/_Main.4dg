@@ -59,7 +59,7 @@ var synchro ;
 var f_Ecran_ptr ;
 
 // Ecran actif.
-var Ecran := ECRAN_HOME;
+var Ecran := ECRAN_ACCUEIL;
 
 /*************************************************************/
 /* FONCTION : void main()                                    */
@@ -123,7 +123,7 @@ func main ()
 
 // ------------------------------------------------------------------------------------
 
-        if (Ecran==ECRAN_HOME)
+        if (Ecran==ECRAN_ACCUEIL)
             f_Ecran_ptr:=file_LoadFunction("Home.4FN");
             Ecran:=f_Ecran_ptr(DELAI_VEILLE);
             mem_Free(f_Ecran_ptr);
